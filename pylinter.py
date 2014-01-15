@@ -16,27 +16,27 @@ from SublimeMessages import multiconf
 MIN_PYLINT_VERSION = LooseVersion("1.1.0")
 
 def plugin_loaded():
-    global pylinter_msg_src, _tmp_messages  # pylint: disable=W
-    pylinter_msg_src = PylinterMessageSource()
+    global pylint_msg_src, _tmp_messages  # pylint: disable=W
+    pylint_msg_src = PylintMessageSource()
     try:
-        pylinter_msg_src.messages = _tmp_messages  # pylint: disable=W0201
+        pylint_msg_src.messages = _tmp_messages  # pylint: disable=W0201
     except NameError:
         pass
-    message_manager.message_manager.add_source(pylinter_msg_src,
-                                           pylinter_msg_src.priority)
+    message_manager.message_manager.add_source(pylint_msg_src,
+                                           pylint_msg_src.priority)
 
 def plugin_unloaded():
     try:
-        global pylinter_msg_src, _tmp_messages  # pylint disable=W
-        _tmp_messages = pylinter_msg_src.messages
-        message_manager.message_manager.del_source(pylinter_msg_src)
-        del pylinter_msg_src
+        global pylint_msg_src, _tmp_messages  # pylint disable=W
+        _tmp_messages = pylint_msg_src.messages
+        message_manager.message_manager.del_source(pylint_msg_src)
+        del pylint_msg_src
     except NameError:
         pass
 
 def get_pylint_bin(settings_obj):
     """ returns a valid, runnable path to pylint, and its LooseVersion """
-    # settings_obj = sublime.load_settings("Pylinter.sublime-settings")
+    # settings_obj = sublime.load_settings("Pylint.sublime-settings")
     ver = None
     pylint_bin = multiconf.get(settings_obj, "pylint_bin", None)
 
@@ -89,14 +89,14 @@ def lintable_view(view):
            view.settings().get('syntax').endswith("Python.tmLanguage")
 
 
-class PylinterMessageSource(message_manager.LineMessageSource):
+class PylintMessageSource(message_manager.LineMessageSource):
     markers = OrderedDict([("I", ("dot", "sublemake_mark.info")),
                            ("R", ("dot", "sublemake_mark.info")),
                            ("C", ("dot", "sublemake_mark.info")),
                            ("W", ("circle", "sublemake_mark.warning")),
                            ("E", ("bookmark", "sublemake_mark.error")),
                            ("F", ("bookmark", "sublemake_mark.error"))])
-    prefix = "Pylinter"
+    prefix = "Pylint"
 
     _pylint_bin = None
     _pylint_ver = None  # pylint version number, filled when checking binary
@@ -105,11 +105,11 @@ class PylinterMessageSource(message_manager.LineMessageSource):
     _active_lint = None
 
     def __init__(self):
-        super(PylinterMessageSource, self).__init__()
+        super(PylintMessageSource, self).__init__()
         self._active_lint = {}
 
     def settings_callback(self):
-        super(PylinterMessageSource, self).settings_callback()
+        super(PylintMessageSource, self).settings_callback()
         # update pylint_bin on the callback to make sure paths are valid
         self._pylint_bin = None
         _ = self.pylint_bin
@@ -195,7 +195,7 @@ class PylinterMessageSource(message_manager.LineMessageSource):
 
         kickoff_time = time.time()
         self._active_lint[vid] = kickoff_time
-        # sublime.set_timeout_async(lambda: pylinter_msg_src.run(view), 100)
+        # sublime.set_timeout_async(lambda: pylint_msg_src.run(view), 100)
         view.erase_status(self.status_key)
         sublime.set_timeout(lambda: self.progress_tracker(view, kickoff_time),
                             100)
@@ -213,14 +213,14 @@ class PylinterMessageSource(message_manager.LineMessageSource):
             view.erase_status("active_pylint")
 
 
-class PylinterSourceListener(sublime_plugin.EventListener):
+class PylintSourceListener(sublime_plugin.EventListener):
     @staticmethod
     def on_post_save_async(view):
         if lintable_view(view):
-            pylinter_msg_src.kickoff(view)
+            pylint_msg_src.kickoff(view)
 
 
-class PylinterIgnoreCommand(sublime_plugin.TextCommand):
+class PylintIgnoreCommand(sublime_plugin.TextCommand):
     def run(self, edit, **kwargs):
         view = self.view
         fname = view.file_name()
@@ -228,7 +228,7 @@ class PylinterIgnoreCommand(sublime_plugin.TextCommand):
         point = view.sel()[0].end()
 
         w_id = window.id()
-        src = pylinter_msg_src
+        src = pylint_msg_src
 
         if w_id in src.messages and fname in src.messages[w_id]:
             err_reg = None
