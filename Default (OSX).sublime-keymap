@@ -1,0 +1,3 @@
+[
+  { "keys": ["super+alt+i"], "command": "pylinter_ignore" }
+]

@@ -1,0 +1,3 @@
+[
+  { "caption": "Pylinter Insert Disable String", "command": "pylinter_ignore" },
+]

@@ -1,0 +1,11 @@
+{
+  // "pylint_bin": "path/to/pylint"
+  "priority": 0,
+  "enabled": true,
+  "ignore": [
+    // "I0011", // Ignoring pylint message
+  ],
+  "disable": [
+    // "I0011", // Ignoring pylint message
+  ]
+}
