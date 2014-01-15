@@ -10,7 +10,7 @@ import time
 import sublime
 import sublime_plugin
 
-from SublimeMessages import mark_errors
+from SublimeMessages import message_manager
 from SublimeMessages import multiconf
 
 MIN_PYLINT_VERSION = LooseVersion("1.1.0")
@@ -22,14 +22,14 @@ def plugin_loaded():
         pylinter_msg_src.messages = _tmp_messages  # pylint: disable=W0201
     except NameError:
         pass
-    mark_errors.message_manager.add_source(pylinter_msg_src,
+    message_manager.message_manager.add_source(pylinter_msg_src,
                                            pylinter_msg_src.priority)
 
 def plugin_unloaded():
     try:
         global pylinter_msg_src, _tmp_messages  # pylint disable=W
         _tmp_messages = pylinter_msg_src.messages
-        mark_errors.message_manager.del_source(pylinter_msg_src)
+        message_manager.message_manager.del_source(pylinter_msg_src)
         del pylinter_msg_src
     except NameError:
         pass
@@ -89,7 +89,7 @@ def lintable_view(view):
            view.settings().get('syntax').endswith("Python.tmLanguage")
 
 
-class PylinterMessageSource(mark_errors.LineMessageSource):
+class PylinterMessageSource(message_manager.LineMessageSource):
     markers = OrderedDict([("I", ("dot", "sublemake_mark.info")),
                            ("R", ("dot", "sublemake_mark.info")),
                            ("C", ("dot", "sublemake_mark.info")),
@@ -133,7 +133,7 @@ class PylinterMessageSource(mark_errors.LineMessageSource):
 
         window = view.window()
         fname = view.file_name()
-        file_info = mark_errors.FileInfoDict()
+        file_info = message_manager.FileInfoDict()
         if not window.id() in self.messages:
             self.messages[window.id()] = {}
         # make a lookup for the order of severity
@@ -170,7 +170,7 @@ class PylinterMessageSource(mark_errors.LineMessageSource):
                     if not line_num in file_info:
                         file_info[line_num] = []
                     msg = "{0}: {1}".format(d["errid"], d["msg"].strip())
-                    err_info = mark_errors.ErrorInfo(self, line_num,
+                    err_info = message_manager.ErrorInfo(self, line_num,
                                                      d["cat"], msg,
                                                      extra=True,
                                                      errid=d['errid'])
