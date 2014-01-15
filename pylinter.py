@@ -10,8 +10,12 @@ import time
 import sublime
 import sublime_plugin
 
-from SublimeMessages import message_manager
-from SublimeMessages import multiconf
+try:
+    from SublimeMessages import message_manager
+    from SublimeMessages import multiconf
+except ImportError:
+    from Messages import message_manager
+    from Messages import multiconf
 
 MIN_PYLINT_VERSION = LooseVersion("1.1.0")
 
