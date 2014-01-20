@@ -265,6 +265,9 @@ class PylintIgnoreCommand(sublime_plugin.TextCommand):
                     start_blurb = ","
                 else:
                     start_blurb = "  # " + pylint_statement
+
+                if len(mlst) == 0:
+                    return None
                 msg = ",".join(mlst)
                 line_txt = line_txt.rstrip() + start_blurb + msg
                 view.replace(edit, line_region, line_txt)
