@@ -249,15 +249,24 @@ class PylintIgnoreCommand(sublime_plugin.TextCommand):
                 # per line for each source
                 finfo = src.messages[w_id][fname]
                 mlst = [i.errid for i in finfo[int(err_reg.xpos)]]
-                msg = ",".join(mlst)
 
-                pylint_statement = "# pylint: disable="
+                pylint_statement = "pylint: disable="
                 line_region = view.line(point)
                 line_txt = view.substr(line_region)
                 if pylint_statement in line_txt:
-                    line_txt = line_txt.rstrip() + ',' + msg
+                    # look for what's already there...
+                    ending = line_txt.rstrip().split(pylint_statement)[-1]
+                    already_disabled = ending.split(',')
+                    for m in already_disabled:
+                        try:
+                            mlst.remove(m)
+                        except ValueError:
+                            pass
+                    start_blurb = ","
                 else:
-                    line_txt = line_txt.rstrip() + "  " + pylint_statement + msg
+                    start_blurb = "  # " + pylint_statement
+                msg = ",".join(mlst)
+                line_txt = line_txt.rstrip() + start_blurb + msg
                 view.replace(edit, line_region, line_txt)
 
 
