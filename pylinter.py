@@ -268,6 +268,12 @@ class PylintIgnoreCommand(sublime_plugin.TextCommand):
 
                 if len(mlst) == 0:
                     return None
+
+                # add only unique items
+                seen = set()
+                seen_add = seen.add
+                mlst = [m for m in mlst if m not in seen and not seen_add(m)]
+
                 msg = ",".join(mlst)
                 line_txt = line_txt.rstrip() + start_blurb + msg
                 view.replace(edit, line_region, line_txt)
