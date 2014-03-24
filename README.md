@@ -8,3 +8,8 @@ The prerequisits for this plugin are:
  - pylint version >= 1.0.1
 
 Much of the inspiriation for this plugin comes from the pylinter plugin, but with an effort to make it a bit more natural. For instance, when you edit a file, and marked lines move, the gutter marks move with them.
+
+Gutter mark colors are determined by the following scopes in your sublime color scheme:
+ - SublimeMessages.error
+ - SublimeMessages.warning
+ - SublimeMessages.info

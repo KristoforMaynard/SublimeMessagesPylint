@@ -94,13 +94,13 @@ def lintable_view(view):
 
 
 class PylintMessageSource(message_manager.LineMessageSource):
-    xpth = "Packages/MessagesSublemake/x.png"
-    markers = OrderedDict([("I", ("dot", "sublemake_mark.info")),
-                           ("R", ("dot", "sublemake_mark.info")),
-                           ("C", ("dot", "sublemake_mark.info")),
-                           ("W", ("circle", "sublemake_mark.warning")),
-                           ("E", (xpth, "sublemake_mark.error")),
-                           ("F", (xpth, "sublemake_mark.error"))])
+    xpth = "Packages/MessagesPylint/x.png"
+    markers = OrderedDict([("I", ("dot", "SublimeMessages.info")),
+                           ("R", ("dot", "SublimeMessages.info")),
+                           ("C", ("dot", "SublimeMessages.info")),
+                           ("W", ("circle", "SublimeMessages.warning")),
+                           ("E", (xpth, "SublimeMessages.error")),
+                           ("F", (xpth, "SublimeMessages.error"))])
     prefix = "Pylint"
 
     _pylint_bin = None
