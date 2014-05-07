@@ -94,7 +94,11 @@ def lintable_view(view):
 
 
 class PylintMessageSource(message_manager.LineMessageSource):
-    xpth = "Packages/MessagesPylint/x.png"
+    pth = "Packages/MessagesPylint/"
+    if not os.path.isdir(pth):
+        pth = "Packages/SublimeMessagesPylint/"
+    xpth = pth + "x.png"
+
     markers = OrderedDict([("I", ("dot", "SublimeMessages.info")),
                            ("R", ("dot", "SublimeMessages.info")),
                            ("C", ("dot", "SublimeMessages.info")),
