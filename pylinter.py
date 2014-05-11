@@ -130,7 +130,7 @@ class PylintMessageSource(message_manager.LineMessageSource):
             self._output_re = re.compile(r"""
                 ^(?P<file>.+?):(?P<line>[0-9]+):
                 (?P<cat>[A-Za-z]):(?P<errid>[A-Za-z]\d+):
-                (?P<msg>.*)
+                (?P<symbol>[A-Za-z0-9\-]+):(?P<msg>.*)
                 """, re.IGNORECASE | re.VERBOSE)
         return self._pylint_bin
 
@@ -149,7 +149,7 @@ class PylintMessageSource(message_manager.LineMessageSource):
         # sev_lookup = OrderedDict(zip(self.markers.keys(), itertools.count()))
 
         cmd = [self.pylint_bin, "-r", "no",
-               "--msg-template", "{path}:{line}:{C}:{msg_id}:{msg}"]
+               "--msg-template", "{path}:{line}:{C}:{msg_id}:{symbol}:{msg}"]
         disable_msgs = multiconf.get(self.settings, "disable", None)
         if disable_msgs is not None:
             disable_msgs = ",".join(disable_msgs)
@@ -171,18 +171,21 @@ class PylintMessageSource(message_manager.LineMessageSource):
             if line.startswith("*************"):
                 continue
 
+            print(line)
             m = re.match(self._output_re, line)
             if m:
                 d = m.groupdict()
+                print(d)
                 line_num = int(d['line']) # - 1
-                if d['errid'].lower() not in ignore:
+                if d['errid'].lower() not in ignore and d['symbol'] not in ignore:
                     if not line_num in file_info:
                         file_info[line_num] = []
                     msg = "{0}: {1}".format(d["errid"], d["msg"].strip())
                     err_info = message_manager.ErrorInfo(self, line_num,
-                                                     d["cat"], msg,
-                                                     extra=True,
-                                                     errid=d['errid'])
+                                                         d["cat"], msg,
+                                                         extra=True,
+                                                         errid=d['errid'],
+                                                         symbol=d['symbol'])
                     file_info[line_num].append(err_info)
                     file_info[line_num].sort(key=attrgetter("order"),
                                              reverse=True)
@@ -253,7 +256,7 @@ class PylintIgnoreCommand(sublime_plugin.TextCommand):
                 # FIXME: xpos shouldn't be a key so we can track > 1 error
                 # per line for each source
                 finfo = src.messages[w_id][fname]
-                mlst = [i.errid for i in finfo[int(err_reg.xpos)]]
+                mlst = [i.symbol for i in finfo[int(err_reg.xpos)]]
 
                 pylint_statement = "pylint: disable="
                 line_region = view.line(point)
