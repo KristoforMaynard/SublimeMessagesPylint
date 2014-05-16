@@ -171,11 +171,11 @@ class PylintMessageSource(message_manager.LineMessageSource):
             if line.startswith("*************"):
                 continue
 
-            print(line)
+            # print(line)
             m = re.match(self._output_re, line)
             if m:
                 d = m.groupdict()
-                print(d)
+                # print(d)
                 line_num = int(d['line']) # - 1
                 if d['errid'].lower() not in ignore and d['symbol'] not in ignore:
                     if not line_num in file_info:
@@ -245,7 +245,7 @@ class PylintIgnoreCommand(sublime_plugin.TextCommand):
         if w_id in src.messages and fname in src.messages[w_id]:
             err_reg = None
             for severity in src.markers.keys():
-                regions = view.get_regions(src.marker_key + severity)
+                regions = view.get_regions(src.marker_key + severity)  # pylint: disable=maybe-no-member
                 for reg in regions:
                     if reg.contains(point):
                         err_reg = reg
