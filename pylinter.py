@@ -163,7 +163,13 @@ class PylintMessageSource(message_manager.LineMessageSource):
         # check stderr for a bad lint run
         err = raw_stderr.decode()
         if len(err.splitlines()) > 0:
-            sublime.error_message("Fatal pylint error:\n{0}".format(err))
+            print("*******************")
+            print("Fatal pylint error:")
+            print("------------------")
+            print("{0}".format(err))
+            print("*******************")
+            sublime.error_message("Fatal pylint error, check console for "
+                                  "details")
             return None
 
         ignore = multiconf.get(self.settings, "ignore", [])
