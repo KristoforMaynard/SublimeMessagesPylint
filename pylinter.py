@@ -94,19 +94,6 @@ def lintable_view(view):
 
 
 class PylintMessageSource(message_manager.LineMessageSource):
-    pth = "Packages/Messages/"
-    if not os.path.isdir(pth):
-        pth = "Packages/SublimeMessages/"
-    epth = pth + "error.png"
-    wpth = pth + "warning.png"
-    ipth = pth + "info.png"
-
-    markers = OrderedDict([("I", (ipth, "SublimeMessages.info")),
-                           ("R", (ipth, "SublimeMessages.info")),
-                           ("C", (ipth, "SublimeMessages.info")),
-                           ("W", (wpth, "SublimeMessages.warning")),
-                           ("E", (epth, "SublimeMessages.error")),
-                           ("F", (epth, "SublimeMessages.error"))])
     prefix = "Pylint"
 
     _pylint_bin = None
@@ -124,6 +111,21 @@ class PylintMessageSource(message_manager.LineMessageSource):
         # update pylint_bin on the callback to make sure paths are valid
         self._pylint_bin = None
         _ = self.pylint_bin
+
+    @property
+    def markers(self):
+        pth = self.get_icon_path()
+        epth = pth + "/error.png"
+        wpth = pth + "/warning.png"
+        ipth = pth + "/info.png"
+        ret = OrderedDict([("I", (ipth, "SublimeMessages.info")),
+                           ("R", (ipth, "SublimeMessages.info")),
+                           ("C", (ipth, "SublimeMessages.info")),
+                           ("W", (wpth, "SublimeMessages.warning")),
+                           ("E", (epth, "SublimeMessages.error")),
+                           ("F", (epth, "SublimeMessages.error"))
+                          ])
+        return ret
 
     @property
     def pylint_bin(self):
