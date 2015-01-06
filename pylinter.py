@@ -158,6 +158,8 @@ class PylintMessageSource(message_manager.LineMessageSource):
         if disable_msgs is not None:
             disable_msgs = ",".join(disable_msgs)
             cmd += ["-d", disable_msgs]
+        extra_args = multiconf.get(self.settings, "extra_args", [])
+        cmd += extra_args
         cmd.append(fname)
         p = sub.Popen(cmd, stdout=sub.PIPE, stderr=sub.PIPE)
         raw_stdout, raw_stderr = p.communicate()
