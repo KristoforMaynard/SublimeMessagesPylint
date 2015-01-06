@@ -81,6 +81,10 @@ def get_pylint_bin(settings_obj):
                 pylint_bin = None
         except (OSError, sub.CalledProcessError) as e:
             print("Pylint: autodiscover failed;", str(e))
+            if python_bin is not None:
+                which_python = sub.check_output(["which", python_bin]).decode()
+                print("Pylint: maybe pylint isn't installed for ",
+                      which_python.strip())
 
     if pylint_bin is None:
         print("Pylint: Could not find pylint :(")
