@@ -94,7 +94,7 @@ def get_pylint_bin(settings_obj):
 
 def lintable_view(view):
     return view.file_name().endswith('.py') or \
-           view.settings().get('syntax').endswith("Python.tmLanguage")
+           "python" in view.settings().get('syntax').lower()
 
 
 class PylintMessageSource(message_manager.LineMessageSource):
