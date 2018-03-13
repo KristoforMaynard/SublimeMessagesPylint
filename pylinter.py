@@ -170,7 +170,9 @@ class PylintMessageSource(message_manager.LineMessageSource):
 
         # check stderr for a bad lint run
         err = raw_stderr.decode()
-        if len(err.splitlines()) > 0:
+        err_lines = [line for line in err.splitlines()
+                     if line and not line.startswith('Using config file')]
+        if len(err_lines) > 0:
             print("*******************")
             print("Fatal pylint error:")
             print("------------------")
